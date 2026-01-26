@@ -9,7 +9,7 @@ class Login extends StatelessWidget {
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(50),
-        color: const Color.fromARGB(104, 187, 187, 187),
+        color: const Color(0xFFF1F3FF),
         child: Form(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
