@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:iglesia_por_el_mundo_movil/ui/login.dart';
+import 'package:iglesia_por_el_mundo_movil/features/login/ui/form_login_page.dart.dart';
+import 'package:iglesia_por_el_mundo_movil/features/registre/ui/form_registre_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: Login(),
+      home: FormRegistrePage(),
     );
   }
 }

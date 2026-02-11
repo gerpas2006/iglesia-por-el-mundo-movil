@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iglesia_por_el_mundo_movil/shared/form_login.dart';
+import 'package:iglesia_por_el_mundo_movil/features/login/shared/login_widget.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -29,7 +29,6 @@ class _LoginState extends State<Login> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
