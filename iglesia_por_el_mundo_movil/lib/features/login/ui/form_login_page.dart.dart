@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iglesia_por_el_mundo_movil/features/login/shared/login_widget.dart';
+import 'package:iglesia_por_el_mundo_movil/features/registre/ui/form_registre_page.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -143,12 +144,35 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 24),
 
                     // ¿No tienes cuenta?
-                    const Text(
-                      '¿No tienes cuenta?',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black54,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          '¿No tienes cuenta? ',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const FormRegistrePage(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Regístrate',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF6366F1),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     Text(

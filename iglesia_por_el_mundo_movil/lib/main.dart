@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:iglesia_por_el_mundo_movil/features/login/ui/form_login_page.dart.dart';
-import 'package:iglesia_por_el_mundo_movil/features/registre/ui/form_registre_page.dart';
+import 'package:iglesia_por_el_mundo_movil/features/oraciones/ui/oraciones_list_page.dart';
+
+import 'package:iglesia_por_el_mundo_movil/features/reseneas/ui/reseneas_list_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,9 +31,9 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: FormRegistrePage(),
+      home: const OracionesListPage(),
     );
   }
 }

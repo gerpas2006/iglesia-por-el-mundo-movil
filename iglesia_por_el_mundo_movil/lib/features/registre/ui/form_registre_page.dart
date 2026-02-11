@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iglesia_por_el_mundo_movil/features/login/shared/login_widget.dart';
+import 'package:iglesia_por_el_mundo_movil/features/login/ui/form_login_page.dart.dart';
 
 class FormRegistrePage extends StatefulWidget {
   const FormRegistrePage({super.key});
@@ -181,13 +182,36 @@ class _RegistreFormPageState extends State<FormRegistrePage> {
                     ),
                     const SizedBox(height: 24),
 
-                    // ¿No tienes cuenta?
-                    const Text(
-                      '¿Ya tienes cuenta?',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black54,
-                      ),
+                    // ¿Ya tienes cuenta?
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          '¿Ya tienes cuenta? ',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Login(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Inicia sesión',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF6366F1),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     Text(
