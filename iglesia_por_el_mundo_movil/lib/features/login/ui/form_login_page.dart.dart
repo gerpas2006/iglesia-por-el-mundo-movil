@@ -5,6 +5,7 @@ import 'package:iglesia_por_el_mundo_movil/features/login/bloc/login_bloc.dart';
 import 'package:iglesia_por_el_mundo_movil/features/login/shared/login_widget.dart';
 import 'package:iglesia_por_el_mundo_movil/features/oraciones/ui/oraciones_list_page.dart';
 import 'package:iglesia_por_el_mundo_movil/features/registre/ui/form_registre_page.dart';
+import 'package:iglesia_por_el_mundo_movil/features/reseneas/ui/reseneas_list_page.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -51,7 +52,7 @@ class _LoginViewState extends State<_LoginView> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const OracionesListPage(),
+              builder: (context) => const ReseneasListPage(),
             ),
           );
         } else if (state is LoginError) {

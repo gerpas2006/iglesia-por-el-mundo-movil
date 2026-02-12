@@ -41,7 +41,7 @@ class OracionesService implements OracionesInterface {
         return listaOraciones;
       } else {
         throw Exception(
-            'Error al obtener oraciones. Status: ${response.statusCode}');
+            'Error al obtener oraciones.');
       }
     } catch (e) {
       throw Exception('Error al obtener oraciones: $e');
