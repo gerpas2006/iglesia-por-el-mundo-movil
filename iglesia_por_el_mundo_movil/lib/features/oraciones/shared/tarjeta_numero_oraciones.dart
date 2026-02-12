@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class TarjetaNumeroOraciones extends StatelessWidget {
-  final int count;
+  final int totalOraciones;
 
-  const TarjetaNumeroOraciones({super.key, required this.count});
+  const TarjetaNumeroOraciones({super.key, required this.totalOraciones});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 160,
+      width: 3000,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -24,7 +24,7 @@ class TarjetaNumeroOraciones extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '$count',
+            '$totalOraciones',
             style: const TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,

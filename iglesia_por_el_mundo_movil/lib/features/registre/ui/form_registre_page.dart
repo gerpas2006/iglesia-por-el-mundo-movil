@@ -1,39 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iglesia_por_el_mundo_movil/core/service/registre_service.dart';
 import 'package:iglesia_por_el_mundo_movil/features/login/shared/login_widget.dart';
 import 'package:iglesia_por_el_mundo_movil/features/login/ui/form_login_page.dart.dart';
+import 'package:iglesia_por_el_mundo_movil/features/registre/bloc/registre_bloc.dart';
 
-class FormRegistrePage extends StatefulWidget {
+class FormRegistrePage extends StatelessWidget {
   const FormRegistrePage({super.key});
 
   @override
-  State<FormRegistrePage> createState() => _RegistreFormPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => RegistreBloc(RegistreService()),
+      child: const _FormRegistreView(),
+    );
+  }
 }
 
-class _RegistreFormPageState extends State<FormRegistrePage> {
+class _FormRegistreView extends StatefulWidget {
+  const _FormRegistreView();
+
+  @override
+  State<_FormRegistreView> createState() => _FormRegistreViewState();
+}
+
+class _FormRegistreViewState extends State<_FormRegistreView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _nameController.dispose();
+    _confirmpasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF1F3FF),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 400),
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+    return BlocListener<RegistreBloc, RegistreState>(
+      listener: (context, state) {
+        if (state is RegistreSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Navegar a login
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const Login(),
+            ),
+          );
+        } else if (state is RegistreError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<RegistreBloc, RegistreState>(
+        builder: (context, state) {
+          final isLoading = state is RegistreLoading;
+          
+          return Scaffold(
+            backgroundColor: const Color(0xFFF1F3FF),
+            body: SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 400),
+                      padding: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -162,7 +215,7 @@ class _RegistreFormPageState extends State<FormRegistrePage> {
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: isLoading ? null : _handleRegistro,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF6366F1),
                           foregroundColor: Colors.white,
@@ -171,13 +224,23 @@ class _RegistreFormPageState extends State<FormRegistrePage> {
                           ),
                           elevation: 0,
                         ),
-                        child: const Text(
-                          'Crear Cuenta',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        child: isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation<Color>(Colors.white),
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text(
+                                'Crear Cuenta',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -228,6 +291,52 @@ class _RegistreFormPageState extends State<FormRegistrePage> {
             ),
           ),
         ),
+      ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _handleRegistro() {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmpasswordController.text;
+
+    // Validar campos vacíos
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      _showError('Por favor completa todos los campos');
+      return;
+    }
+
+    // Validar que las contraseñas coincidan
+    if (password != confirmPassword) {
+      _showError('Las contraseñas no coinciden');
+      return;
+    }
+
+    // Validar longitud de contraseña
+    if (password.length < 8) {
+      _showError('La contraseña debe tener al menos 8 caracteres');
+      return;
+    }
+
+    // Enviar evento al BLoC
+    context.read<RegistreBloc>().add(
+          RegistreSubmitted(
+            name: name,
+            email: email,
+            password: password,
+          ),
+        );
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
       ),
     );
   }
