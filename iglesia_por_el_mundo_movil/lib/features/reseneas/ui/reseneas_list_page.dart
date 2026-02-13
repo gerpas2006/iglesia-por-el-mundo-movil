@@ -12,9 +12,21 @@ class ReseneasListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ReseneaBloc(ReseneaService())..add(ReseneaSubmitted()),
+      create: (context) => ReseneaBloc(ReseneaService())..add(ReseneaLoadRequested()),
       child: Scaffold(
-        appBar: AppBar(title: const Text("Reseñas de la Iglesia")),
+        backgroundColor: const Color(0xFFF8F9FE),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text(
+            "Reseñas de la Iglesia",
+            style: TextStyle(
+              color: Color(0xFF2D3243),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          automaticallyImplyLeading: false,
+        ),
         body: BlocBuilder<ReseneaBloc, ReseneaState>(
           builder: (context, state) {
             if (state is ResenaLoading) {
@@ -37,7 +49,7 @@ class ReseneasListPage extends StatelessWidget {
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: () {
-                        context.read<ReseneaBloc>().add(ReseneaSubmitted());
+                        context.read<ReseneaBloc>().add(ReseneaLoadRequested());
                       },
                       icon: const Icon(Icons.refresh),
                       label: const Text('Reintentar'),
@@ -108,7 +120,7 @@ class ReseneasListPage extends StatelessWidget {
                             )
                           : RefreshIndicator(
                               onRefresh: () async {
-                                context.read<ReseneaBloc>().add(ReseneaSubmitted());
+                                context.read<ReseneaBloc>().add(ReseneaLoadRequested());
                               },
                               child: ListView.builder(
                                 itemCount: reseneas.length,
