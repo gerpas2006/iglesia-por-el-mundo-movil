@@ -86,25 +86,6 @@ class ReseneasListPage extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TarjetasNumeroReseneasWidget(
-                                title: "Mis Reseñas",
-                                value: totalReseneas.toString(),
-                                color: Colors.green,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            const Expanded(
-                              child: TarjetasNumeroReseneasWidget(
-                                title: "Pendientes",
-                                value: "0",
-                                color: Colors.orange,
-                              ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
