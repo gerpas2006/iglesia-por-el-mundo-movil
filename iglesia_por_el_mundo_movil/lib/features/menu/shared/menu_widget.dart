@@ -41,8 +41,7 @@ class MenuWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 8,
+      elevation: 8,
       child: SizedBox(
         height: 70,
         child: Row(
@@ -50,12 +49,10 @@ class MenuWidget extends StatelessWidget {
           children: [
             _buildItem(icon: Icons.home, label: "Inicio", index: 0),
             _buildItem(icon: Icons.favorite_border, label: "Donar", index: 1),
-
-            const SizedBox(width: 40), // espacio para FAB
-
-            _buildItem(icon: Icons.calendar_today, label: "Citas", index: 3),
-            _buildItem(icon: Icons.menu_book, label: "Orar", index: 4),
-            _buildItem(icon: Icons.star_border, label: "Reseñas", index: 5),
+            _buildItem(icon: Icons.calendar_today, label: "Citas", index: 2),
+            _buildItem(icon: Icons.menu_book, label: "Orar", index: 3),
+            _buildItem(icon: Icons.star_border, label: "Reseñas", index: 4),
+            _buildItem(icon: Icons.event, label: "Eventos", index: 5),
           ],
         ),
       ),

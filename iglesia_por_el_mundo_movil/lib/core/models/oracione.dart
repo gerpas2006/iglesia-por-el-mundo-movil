@@ -5,8 +5,8 @@ class OracionResponse {
   final String autor;
   final int estado;
   final int tipoOracionId;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
   final TipoOracion? tipoOracion;
 
   OracionResponse({
@@ -16,8 +16,8 @@ class OracionResponse {
     required this.autor,
     required this.estado,
     required this.tipoOracionId,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     this.tipoOracion,
   });
 
@@ -29,8 +29,12 @@ class OracionResponse {
       autor: json['autor'],
       estado: json['estado'],
       tipoOracionId: json['tipo_oracion_id'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.tryParse(json['updated_at'])
+          : null,
       tipoOracion: json['tipo_oracion'] != null
           ? TipoOracion.fromJson(json['tipo_oracion'])
           : null,
@@ -45,8 +49,8 @@ class OracionResponse {
       'autor': autor,
       'estado': estado,
       'tipo_oracion_id': tipoOracionId,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
       'tipo_oracion': tipoOracion?.toJson(),
     };
   }
@@ -56,15 +60,15 @@ class TipoOracion {
   final int id;
   final String nombreOracion;
   final String descripcionOracion;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   TipoOracion({
     required this.id,
     required this.nombreOracion,
     required this.descripcionOracion,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory TipoOracion.fromJson(Map<String, dynamic> json) {
@@ -72,8 +76,12 @@ class TipoOracion {
       id: json['id'],
       nombreOracion: json['nombre_oracion'],
       descripcionOracion: json['descripcion_oracion'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      createdAt: json['created_at'] != null
+          ? DateTime.tryParse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.tryParse(json['updated_at'])
+          : null,
     );
   }
 
@@ -82,8 +90,8 @@ class TipoOracion {
       'id': id,
       'nombre_oracion': nombreOracion,
       'descripcion_oracion': descripcionOracion,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 }

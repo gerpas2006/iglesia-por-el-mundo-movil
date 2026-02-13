@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:iglesia_por_el_mundo_movil/features/menu/shared/menu_widget.dart';
 import 'package:iglesia_por_el_mundo_movil/features/oraciones/ui/oraciones_list_page.dart';
 import 'package:iglesia_por_el_mundo_movil/features/reseneas/ui/reseneas_list_page.dart';
+import 'package:iglesia_por_el_mundo_movil/features/donaciones/ui/donaciones_list_page.dart';
+import 'package:iglesia_por_el_mundo_movil/features/citas/ui/citas_list_page.dart';
+import 'package:iglesia_por_el_mundo_movil/features/eventos/ui/eventos_list_page.dart';
+import 'package:iglesia_por_el_mundo_movil/features/inicio/ui/inicio_page.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({Key? key}) : super(key: key);
@@ -19,28 +23,22 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
-  void _onFabPressed() {
-    setState(() {
-      _currentIndex = 2; // índice del botón central
-    });
-  }
-
   Widget _getPage(int index) {
     switch (index) {
       case 0:
-        return _buildPlaceholderPage('Inicio', Icons.home);
+        return const HomeContent();
       case 1:
-        return _buildPlaceholderPage('Donar', Icons.favorite);
+        return const MisDonacionesScreen();
       case 2:
-        return _buildPlaceholderPage('Ministerios', Icons.work);
+        return const MisCitasScreen();
       case 3:
-        return _buildPlaceholderPage('Citas', Icons.calendar_today);
-      case 4:
         return const OracionesListPage();
-      case 5:
+      case 4:
         return const ReseneasListPage();
+      case 5:
+        return const EventosScreen();
       default:
-        return _buildPlaceholderPage('Inicio', Icons.home);
+        return const HomeContent();
     }
   }
 
@@ -66,7 +64,6 @@ class _MenuPageState extends State<MenuPage> {
             Icon(
               icon,
               size: 100,
-              color: const Color(0xFF6366F1).withOpacity(0.3),
             ),
             const SizedBox(height: 24),
             Text(
@@ -99,10 +96,11 @@ class _MenuPageState extends State<MenuPage> {
         children: [
           _getPage(0), // Inicio
           _getPage(1), // Donar
-          _getPage(2), // Ministerios (FAB)
-          _getPage(3), // Citas
-          _getPage(4), // Oraciones
-          _getPage(5), // Reseñas
+          _getPage(2), // Citas
+          _getPage(3), // Oraciones
+          _getPage(4), // Reseñas
+          _getPage(5), // Eventos
+
         ],
       ),
 
@@ -110,14 +108,6 @@ class _MenuPageState extends State<MenuPage> {
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
       ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onFabPressed,
-        backgroundColor: const Color(0xFF6366F1),
-        child: const Icon(Icons.work, color: Colors.white),
-      ),
-
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
