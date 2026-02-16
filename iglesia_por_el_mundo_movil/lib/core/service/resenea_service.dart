@@ -42,7 +42,7 @@ class ReseneaService implements ReseneaInterface{
   }
 
   @override
-  Future<ReseneaResponse> crearResenea(ReseneaDto resenea) {
+  Future<ReseneaResponse> crearResenea(ReseneaDTO resenea) {
     final token = _tokenService.getToken();
       var url = Uri.parse('$_baseUrl/reseneas');
       return token.then((token) async {
@@ -59,7 +59,6 @@ class ReseneaService implements ReseneaInterface{
               'descripcion_resenea': resenea.descripcion_resenea,
               'comentarios_resenea': resenea.comentarios_resenea,
               'fecha_resenea': resenea.fecha_resenea,
-              'usuario': resenea.usuario,
               'user_id': resenea.user_id,
             }),
           );

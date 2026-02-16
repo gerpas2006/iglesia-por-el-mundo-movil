@@ -6,6 +6,6 @@ sealed class ReseneaEvent {}
 final class ReseneaLoadRequested extends ReseneaEvent {}
 
 final class ReseneaSubmitted extends ReseneaEvent{
-  final ReseneaDto resenea;
+  final ReseneaDTO resenea;
   ReseneaSubmitted(this.resenea);
 }
