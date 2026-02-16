@@ -36,10 +36,10 @@ class HistorialDonacionCard extends StatelessWidget {
               Row(
                 children: [
                   // Badge Tipo
-                  Container(
+                  Container(  
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
+                      border: Border.all(color: const Color.fromARGB(255, 199, 67, 67)),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -52,7 +52,6 @@ class HistorialDonacionCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  
                   // Badge Estado (Fijo como 'Completada' según diseño)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

@@ -34,6 +34,7 @@ class ResumenEventoCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
+            
             titulo,
             style: TextStyle(
               fontSize: 14,

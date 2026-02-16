@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iglesia_por_el_mundo_movil/core/service/citas_service.dart';
 import 'package:iglesia_por_el_mundo_movil/features/citas/bloc/citas_bloc.dart';
-import 'package:iglesia_por_el_mundo_movil/features/citas/chared/resumen_cita_widget.dart';
-import 'package:iglesia_por_el_mundo_movil/features/citas/chared/solicitud_cita_card.dart';
+import 'package:iglesia_por_el_mundo_movil/features/citas/shared/resumen_cita_widget.dart';
+import 'package:iglesia_por_el_mundo_movil/features/citas/shared/solicitud_cita_card.dart';
 
 class MisCitasScreen extends StatelessWidget {
   const MisCitasScreen({super.key});
