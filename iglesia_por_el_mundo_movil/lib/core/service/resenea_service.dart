@@ -55,11 +55,7 @@ class ReseneaService implements ReseneaInterface{
               'Authorization': 'Bearer $token',
             },
             body: json.encode({
-              'titulo_resenea': resenea.titulo_resenea,
-              'descripcion_resenea': resenea.descripcion_resenea,
-              'comentarios_resenea': resenea.comentarios_resenea,
-              'fecha_resenea': resenea.fecha_resenea,
-              'user_id': resenea.user_id,
+              resenea
             }),
           );
   
