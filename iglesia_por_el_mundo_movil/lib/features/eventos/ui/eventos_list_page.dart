@@ -18,14 +18,15 @@ class EventosScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
+          automaticallyImplyLeading: false,
           title: const Text(
-            'Eventos',
+            "Eventos de la Iglesia",
             style: TextStyle(
-              color: Color(0xFF2D3243),
+              fontSize: 22,
               fontWeight: FontWeight.bold,
+              color: Color(0xFF2C3E50),
             ),
           ),
-          automaticallyImplyLeading: false,
         ),
         body: BlocBuilder<EventosBloc, EventosState>(
           builder: (context, state) {
@@ -78,24 +79,6 @@ class EventosScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Título y Subtítulo
-                          const Text(
-                            "Eventos de la Iglesia",
-                            style: TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF2C3E50),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Descubre y regístrate en nuestros eventos",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-
                           const SizedBox(height: 30),
 
                           // Tarjetas de Resumen

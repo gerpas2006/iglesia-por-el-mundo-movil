@@ -23,31 +23,9 @@ class _OracionesListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Oraciones Diarias',
-          style: TextStyle(
-            color: Color(0xFF2D3243),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.black54),
-            onPressed: () {
-              context.read<OracionesBloc>().add(RegistreSubmitted());
-            },
-          ),
-        ],
-        
-      ),
-      
-      body: BlocBuilder<OracionesBloc, OracionesState>(
+    return ColoredBox(
+      color: const Color(0xFFF8F9FE),
+      child: BlocBuilder<OracionesBloc, OracionesState>(
         builder: (context, state) {
           if (state is OracionesLoading) {
             return const Center(
@@ -138,27 +116,48 @@ class _OracionesListView extends StatelessWidget {
               );
             }
 
-            return Column(
-              children: [
-                // Tarjeta contador de oraciones
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: TarjetaNumeroOraciones(
-                    totalOraciones: state.totalOraciones,
-                  ),
-                ),
-                // Lista de oraciones
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: oraciones.length,
-                    itemBuilder: (context, index) {
-                      final oracion = oraciones[index];
-                      return TarjetaContenidoOracionesWidget(oracion: oracion);
-                    },
-                  ),
-                ),
-              ],
+            return ListView.builder(
+              padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+              itemCount: oraciones.length + 2,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        SizedBox(height: 30),
+                        Text(
+                          "Oraciones",
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2D3243),
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          "Encuentra inspiración y guía en estas oraciones",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.blueGrey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                if (index == 1) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: TarjetaNumeroOraciones(
+                      totalOraciones: state.totalOraciones,
+                    ),
+                  );
+                }
+                final oracion = oraciones[index - 2];
+                return TarjetaContenidoOracionesWidget(oracion: oracion);
+              },
             );
           }
 

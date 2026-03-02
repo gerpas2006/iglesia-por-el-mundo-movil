@@ -6,45 +6,27 @@ import 'package:iglesia_por_el_mundo_movil/features/citas/shared/resumen_cita_wi
 import 'package:iglesia_por_el_mundo_movil/features/citas/shared/solicitud_cita_card.dart';
 
 class MisCitasScreen extends StatelessWidget {
-  const MisCitasScreen({super.key});
+  final void Function(int)? onNavigate;
+  const MisCitasScreen({super.key, this.onNavigate});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CitasBloc(CitasService())..add(CitasSubmitted()),
-      child: const _CitasView(),
+      child: _CitasView(onNavigate: onNavigate),
     );
   }
 }
 
 class _CitasView extends StatelessWidget {
-  const _CitasView();
+  final void Function(int)? onNavigate;
+  const _CitasView({this.onNavigate});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Mis Solicitudes de Citas',
-          style: TextStyle(
-            color: Color(0xFF2D3243),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.black54),
-            onPressed: () {
-              context.read<CitasBloc>().add(CitasSubmitted());
-            },
-          ),
-        ],
-      ),
-      body: BlocBuilder<CitasBloc, CitasState>(
+    return ColoredBox(
+      color: const Color(0xFFF8F9FE),
+      child: BlocBuilder<CitasBloc, CitasState>(
         builder: (context, state) {
           if (state is CitasLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -111,156 +93,112 @@ class _CitasView extends StatelessWidget {
                   onRefresh: () async {
                     context.read<CitasBloc>().add(CitasSubmitted());
                   },
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Botón Nueva Solicitud
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              // TODO: Navegar a formulario de nueva cita
-                            },
-                            icon: const Icon(Icons.add, size: 20),
-                            label: const Text(
-                              "Nueva Solicitud",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF5C6BC0),
-                              foregroundColor: Colors.white,
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                    itemCount: citas.isEmpty ? 3 : citas.length + 2,
+                    itemBuilder: (context, index) {
+                      // Botón nueva solicitud
+                      if (index == 0) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                // TODO: Navegar a formulario de nueva cita
+                              },
+                              icon: const Icon(Icons.add, size: 20),
+                              label: const Text(
+                                "Nueva Solicitud",
+                                style: TextStyle(fontWeight: FontWeight.w600),
                               ),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Tarjetas de Resumen
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ResumenCitaCard(
-                                titulo: "Total de Solicitudes",
-                                valor: totalCitas.toString(),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: ResumenCitaCard(
-                                titulo: "Aceptadas",
-                                valor: citasAceptadas.toString(),
-                                colorValor: const Color(0xFF00C853),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ResumenCitaCard(
-                                titulo: "Pendientes",
-                                valor: citasPendientes.toString(),
-                                colorValor: const Color(0xFFFF9800),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            const Expanded(child: SizedBox()),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Sección Lista de Solicitudes
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(24),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.03),
-                                blurRadius: 15,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Mis Solicitudes",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF37474F),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF5C6BC0),
+                                foregroundColor: Colors.white,
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
+                                padding: const EdgeInsets.symmetric(vertical: 14),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                "Historial de todas tus solicitudes",
-                                style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Lista de citas
-                              if (citas.isEmpty)
-                                const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(32.0),
-                                    child: Column(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_today_outlined,
-                                          size: 60,
-                                          color: Colors.grey,
-                                        ),
-                                        SizedBox(height: 16),
-                                        Text(
-                                          'No hay citas registradas',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              else
-                                ...citas.map((cita) {
-                                  final nombreCita = cita.tipoCita?.nombreCita ?? 'Cita';
-                                  final estado = cita.estado ?? 'Desconocido';
-                                  final fechaCita = cita.fechaYHoraCita != null
-                                      ? '${cita.fechaYHoraCita!.day}/${cita.fechaYHoraCita!.month}/${cita.fechaYHoraCita!.year}'
-                                      : 'Sin fecha';
-                                  final horaCita = cita.fechaYHoraCita != null
-                                      ? '${cita.fechaYHoraCita!.hour.toString().padLeft(2, '0')}:${cita.fechaYHoraCita!.minute.toString().padLeft(2, '0')}'
-                                      : '--:--';
-                                  final fechaSolicitud = cita.createdAt != null
-                                      ? '${cita.createdAt!.day} ${_getMonthAbbreviation(cita.createdAt!.month)}'
-                                      : 'Sin fecha';
-
-                                  return SolicitudCitaCard(
-                                    nombreCita: nombreCita,
-                                    estado: estado,
-                                    fechaCita: fechaCita,
-                                    horaCita: horaCita,
-                                    fechaSolicitud: fechaSolicitud,
-                                  );
-                                }).toList(),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        );
+                      }
+                      // Tarjetas resumen
+                      if (index == 1) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: IntrinsicHeight(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: ResumenCitaCard(
+                                    titulo: "Total",
+                                    valor: totalCitas.toString(),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ResumenCitaCard(
+                                    titulo: "Aceptadas",
+                                    valor: citasAceptadas.toString(),
+                                    colorValor: const Color(0xFF00C853),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ResumenCitaCard(
+                                    titulo: "Pendientes",
+                                    valor: citasPendientes.toString(),
+                                    colorValor: const Color(0xFFFF9800),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      // Estado vacío
+                      if (citas.isEmpty) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 60),
+                            child: Column(
+                              children: [
+                                Icon(Icons.calendar_today_outlined, size: 60, color: Colors.grey),
+                                SizedBox(height: 16),
+                                Text(
+                                  'No hay citas registradas',
+                                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      final cita = citas[index - 2];
+                      final nombreCita = cita.tipoCita?.nombreCita ?? 'Cita';
+                      final estado = cita.estado ?? 'Desconocido';
+                      final fechaCita = cita.fechaYHoraCita != null
+                          ? '${cita.fechaYHoraCita!.day}/${cita.fechaYHoraCita!.month}/${cita.fechaYHoraCita!.year}'
+                          : 'Sin fecha';
+                      final horaCita = cita.fechaYHoraCita != null
+                          ? '${cita.fechaYHoraCita!.hour.toString().padLeft(2, '0')}:${cita.fechaYHoraCita!.minute.toString().padLeft(2, '0')}'
+                          : '--:--';
+                      final fechaSolicitud = cita.createdAt != null
+                          ? '${cita.createdAt!.day} ${_getMonthAbbreviation(cita.createdAt!.month)}'
+                          : 'Sin fecha';
+                      return SolicitudCitaCard(
+                        nombreCita: nombreCita,
+                        estado: estado,
+                        fechaCita: fechaCita,
+                        horaCita: horaCita,
+                        fechaSolicitud: fechaSolicitud,
+                        cita: cita,
+                      );
+                    },
                   ),
                 );
               },

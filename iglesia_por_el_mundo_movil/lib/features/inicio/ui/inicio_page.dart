@@ -14,7 +14,9 @@ import 'package:iglesia_por_el_mundo_movil/features/eventos/ui/eventos_list_page
 
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int initialIndex;
+
+  const HomeScreen({super.key, this.initialIndex = 0});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -36,6 +38,12 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
   }
 
   @override
@@ -128,7 +136,15 @@ class HomeContent extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            // Navegar a lista completa
+                            final homeState = context.findAncestorStateOfType<_HomeScreenState>();
+                            if (homeState != null) {
+                              homeState._onItemTapped(5);
+                            } else {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const HomeScreen(initialIndex: 5)),
+                              );
+                            }
                           },
                           child: const Text("Ver todos"),
                         )

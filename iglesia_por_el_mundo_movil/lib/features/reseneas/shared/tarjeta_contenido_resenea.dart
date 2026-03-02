@@ -4,7 +4,6 @@ class TarjetaContenidoResenea extends StatelessWidget {
   final String title;
   final String description;
   final double rating;
-  final String status;
   final DateTime date;
 
   const TarjetaContenidoResenea({
@@ -12,20 +11,8 @@ class TarjetaContenidoResenea extends StatelessWidget {
     required this.title,
     required this.description,
     required this.rating,
-    required this.status,
     required this.date,
   });
-
-  Color getStatusColor() {
-    switch (status.toLowerCase()) {
-      case 'aprobada':
-        return Colors.green;
-      case 'pendiente':
-        return Colors.orange;
-      default:
-        return Colors.grey;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +41,8 @@ class TarjetaContenidoResenea extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: getStatusColor(),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(status, style: const TextStyle(color: Colors.white, fontSize: 12)),
               ),
             ],
           ),

@@ -6,46 +6,28 @@ import 'package:iglesia_por_el_mundo_movil/features/donaciones/shared/historial_
 import 'package:iglesia_por_el_mundo_movil/features/donaciones/shared/resumen_donaciones_widget.dart';
 
 class MisDonacionesScreen extends StatelessWidget {
-  const MisDonacionesScreen({super.key});
+  final void Function(int)? onNavigate;
+  const MisDonacionesScreen({super.key, this.onNavigate});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DonacionesBloc(DonacionesService())
         ..add(DonacionesLoadRequested()),
-      child: const _DonacionesView(),
+      child: _DonacionesView(onNavigate: onNavigate),
     );
   }
 }
 
 class _DonacionesView extends StatelessWidget {
-  const _DonacionesView();
+  final void Function(int)? onNavigate;
+  const _DonacionesView({this.onNavigate});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Mis Donaciones',
-          style: TextStyle(
-            color: Color(0xFF2D3243),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.black54),
-            onPressed: () {
-              context.read<DonacionesBloc>().add(DonacionesLoadRequested());
-            },
-          ),
-        ],
-      ),
-      body: BlocBuilder<DonacionesBloc, DonacionesState>(
+    return ColoredBox(
+      color: const Color(0xFFF8F9FE),
+      child: BlocBuilder<DonacionesBloc, DonacionesState>(
         builder: (context, state) {
           if (state is DonacionesLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -101,136 +83,71 @@ class _DonacionesView extends StatelessWidget {
               onRefresh: () async {
                 context.read<DonacionesBloc>().add(DonacionesLoadRequested());
               },
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Botón Nueva Donación
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          // TODO: Navegar a formulario de nueva donación
-                        },
-                        icon: const Icon(Icons.add, size: 20),
-                        label: const Text(
-                          "Nueva Donación",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF5C6BC0),
-                          foregroundColor: Colors.white,
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Tarjetas de Resumen
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ResumenDonacionCard(
-                            titulo: "Total Donado",
-                            valor: "\$${totalDonado.toStringAsFixed(2)}",
-                            colorTexto: const Color(0xFF5C6BC0),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: ResumenDonacionCard(
-                            titulo: "Total de Donaciones",
-                            valor: totalDonaciones.toString(),
-                            colorTexto: const Color(0xFF5C6BC0),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Sección Historial
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 15,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Historial de Donaciones",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF37474F),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Todas tus contribuciones registradas",
-                            style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // Lista de donaciones
-                          if (donaciones.isEmpty)
-                            const Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(32.0),
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.volunteer_activism_outlined,
-                                      size: 60,
-                                      color: Colors.grey,
-                                    ),
-                                    SizedBox(height: 16),
-                                    Text(
-                                      'No hay donaciones registradas',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+              child: ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                itemCount: donaciones.isEmpty ? 2 : donaciones.length + 1,
+                itemBuilder: (context, index) {
+                  // Tarjetas resumen
+                  if (index == 0) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: ResumenDonacionCard(
+                                titulo: "Total Donado",
+                                valor: "\$${totalDonado.toStringAsFixed(2)}",
+                                colorTexto: const Color(0xFF5C6BC0),
                               ),
-                            )
-                          else
-                            ...donaciones.map((donacion) {
-                              final tipoDonacion = donacion.tipoDonacion?.nombreDonacion ?? 'Donación';
-                              final monto = donacion.donacion ?? 0.0;
-                              final fecha = donacion.fechaDonacion != null
-                                  ? '${donacion.fechaDonacion!.day}/${donacion.fechaDonacion!.month}/${donacion.fechaDonacion!.year}'
-                                  : 'Fecha no disponible';
-                              final metodo = donacion.metodo ?? 'No especificado';
-
-                              return HistorialDonacionCard(
-                                tipo: tipoDonacion,
-                                monto: monto,
-                                fecha: fecha,
-                                metodo: metodo,
-                              );
-                            }).toList(),
-                        ],
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: ResumenDonacionCard(
+                                titulo: "Total de Donaciones",
+                                valor: totalDonaciones.toString(),
+                                colorTexto: const Color(0xFF5C6BC0),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    );
+                  }
+                  // Estado vacío
+                  if (donaciones.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 60),
+                        child: Column(
+                          children: [
+                            Icon(Icons.volunteer_activism_outlined, size: 60, color: Colors.grey),
+                            SizedBox(height: 16),
+                            Text(
+                              'No hay donaciones registradas',
+                              style: TextStyle(fontSize: 16, color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                  final donacion = donaciones[index - 1];
+                  final tipoDonacion = donacion.tipoDonacion?.nombreDonacion ?? 'Donación';
+                  final monto = donacion.donacion ?? 0.0;
+                  final fecha = donacion.fechaDonacion != null
+                      ? '${donacion.fechaDonacion!.day}/${donacion.fechaDonacion!.month}/${donacion.fechaDonacion!.year}'
+                      : 'Fecha no disponible';
+                  final metodo = donacion.metodo ?? 'No especificado';
+                  return HistorialDonacionCard(
+                    tipo: tipoDonacion,
+                    monto: monto,
+                    fecha: fecha,
+                    metodo: metodo,
+                    donacion: donacion,
+                  );
+                },
               ),
             );
           }

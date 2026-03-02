@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:bloc/bloc.dart';
 import 'package:iglesia_por_el_mundo_movil/core/dto/resenea_dto.dart';
 import 'package:iglesia_por_el_mundo_movil/core/models/resenea.dart';
@@ -45,18 +43,20 @@ class ReseneaBloc extends Bloc<ReseneaEvent, ReseneaState> {
     Emitter<ReseneaState> emit,
   ) async {
     emit(ResenaLoading());
-    try { 
+    try {
       await _reseneaService.crearResenea(event.resenea);
+      emit(ReseneaCreateSuccess());
       final response = await _reseneaService.getAllResenea();
 
       final totalReseneas = response.length;
       final double promedioCalificacion = totalReseneas > 0
-          ? response.map((r) => r.calificacionResenea).reduce((a, b) => a + b) / totalReseneas
+          ? response.map((r) => r.calificacionResenea).reduce((a, b) => a + b) /
+              totalReseneas
           : 0.0;
 
       emit(ReseneaSucces(
         listaResenea: response,
-        mediaResena : promedioCalificacion,
+        mediaResena: promedioCalificacion,
         totalReseneas: totalReseneas,
       ));
     } catch (e) {

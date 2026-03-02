@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:iglesia_por_el_mundo_movil/core/models/citas.dart';
 
 class SolicitudCitaCard extends StatelessWidget {
-  final String nombreCita;      // Ej: "Consejería", "Bautizo"
-  final String estado;          // Ej: "Aprobada", "Pendiente"
-  final String fechaCita;       // Ej: "15 oct 2025"
-  final String horaCita;        // Ej: "15:00"
-  final String fechaSolicitud;  // Ej: "3 oct"
+  final String nombreCita;
+  final String estado;
+  final String fechaCita;
+  final String horaCita;
+  final String fechaSolicitud;
+  final CitaResponse cita;
 
   const SolicitudCitaCard({
     super.key,
@@ -14,6 +16,7 @@ class SolicitudCitaCard extends StatelessWidget {
     required this.fechaCita,
     required this.horaCita,
     required this.fechaSolicitud,
+    required this.cita,
   });
 
   @override
@@ -109,30 +112,33 @@ class SolicitudCitaCard extends StatelessWidget {
           ),
 
           // 4. Botón inferior "Ver Detalles"
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            decoration: const BoxDecoration(
-              color: Color(0xFFF3F4F6), // Gris muy claro de fondo
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(14),
-                bottomRight: Radius.circular(14),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.remove_red_eye_outlined, size: 18, color: Color(0xFF37474F)),
-                const SizedBox(width: 8),
-                Text(
-                  "Ver Detalles",
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
-                  ),
+          GestureDetector(
+            onTap: () => _mostrarDetalles(context),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: const BoxDecoration(
+                color: Color(0xFFF3F4F6),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(14),
+                  bottomRight: Radius.circular(14),
                 ),
-              ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.remove_red_eye_outlined, size: 18, color: Color(0xFF37474F)),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Ver Detalles",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -142,4 +148,104 @@ class SolicitudCitaCard extends StatelessWidget {
 
   TextStyle _labelStyle() => TextStyle(fontSize: 11, color: Colors.grey[500]);
   TextStyle _valueStyle() => const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF37474F));
+
+  void _mostrarDetalles(BuildContext context) {
+    final isAprobada = estado.toLowerCase() == 'aprobada' || estado.toLowerCase() == 'aceptada';
+    final colorEstado = isAprobada ? const Color(0xFF00C853) : const Color(0xFFFF9800);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.6,
+        maxChildSize: 0.9,
+        builder: (_, controller) => SingleChildScrollView(
+          controller: controller,
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Handle
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+
+              // Título
+              Row(
+                children: [
+                  const Icon(Icons.calendar_today, color: Color(0xFFAB47BC), size: 24),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      cita.tipoCita?.nombreCita ?? 'Cita',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2D3243),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              if (cita.tipoCita?.descripcionCita != null) ...[  
+                Text(
+                  cita.tipoCita!.descripcionCita!,
+                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                ),
+                const SizedBox(height: 16),
+              ],
+
+              const Divider(),
+              const SizedBox(height: 12),
+
+              _fila('Estado', estado, Icons.info_outline, valueColor: colorEstado),
+              _fila('Solicitante', cita.nombreCompleto.isNotEmpty ? cita.nombreCompleto : '-', Icons.person_outline),
+              _fila('Fecha y hora de cita', '$fechaCita  $horaCita', Icons.calendar_today_outlined),
+              _fila('Fecha de solicitud', fechaSolicitud, Icons.access_time_outlined),
+              if (cita.contacto != null && cita.contacto!.isNotEmpty)
+                _fila('Contacto', cita.contacto!, Icons.phone_outlined),
+              if (cita.mensaje != null && cita.mensaje!.isNotEmpty)
+                _fila('Mensaje', cita.mensaje!, Icons.message_outlined),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _fila(String label, String value, IconData icon, {Color? valueColor}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: const Color(0xFFAB47BC)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: TextStyle(fontSize: 11, color: Colors.grey[500], fontWeight: FontWeight.w500)),
+                const SizedBox(height: 2),
+                Text(value, style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: valueColor ?? const Color(0xFF37474F))),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
