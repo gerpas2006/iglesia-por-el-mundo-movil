@@ -16,33 +16,12 @@ class _FormularioReseneaPageState extends State<FormularioReseneaPage> {
   final _comentarioController = TextEditingController();
 
   int _calificacion = 0;
-  DateTime? _fechaSeleccionada;
 
   @override
   void dispose() {
     _tituloController.dispose();
     _comentarioController.dispose();
     super.dispose();
-  }
-
-  Future<void> _seleccionarFecha() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-    if (picked != null) {
-      setState(() {
-        _fechaSeleccionada = picked;
-      });
-    }
-  }
-
-  String _formatearFecha(DateTime date) {
-    final mes = date.month.toString().padLeft(2, '0');
-    final dia = date.day.toString().padLeft(2, '0');
-    return '${date.year}-$mes-$dia';
   }
 
   void _submit() {
@@ -53,18 +32,11 @@ class _FormularioReseneaPageState extends State<FormularioReseneaPage> {
         );
         return;
       }
-      if (_fechaSeleccionada == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Por favor selecciona una fecha')),
-        );
-        return;
-      }
 
       final dto = ReseneaDTO(
         tituloReseneas: _tituloController.text.trim(),
         calificacionResenea: _calificacion,
         comentarioResenea: _comentarioController.text.trim(),
-        fechaResenea: _formatearFecha(_fechaSeleccionada!),
       );
 
       context.read<ReseneaBloc>().add(ReseneaSubmitted(dto));
@@ -194,47 +166,6 @@ class _FormularioReseneaPageState extends State<FormularioReseneaPage> {
                     ),
                     validator: (v) =>
                         (v == null || v.trim().isEmpty) ? 'Campo requerido' : null,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Fecha
-                  const Text(
-                    'Fecha',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                      color: Color(0xFF2D3243),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  GestureDetector(
-                    onTap: _seleccionarFecha,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 14),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.calendar_today,
-                              color: Color(0xFF2D3243), size: 20),
-                          const SizedBox(width: 12),
-                          Text(
-                            _fechaSeleccionada != null
-                                ? _formatearFecha(_fechaSeleccionada!)
-                                : 'Seleccionar fecha',
-                            style: TextStyle(
-                              color: _fechaSeleccionada != null
-                                  ? const Color(0xFF2D3243)
-                                  : Colors.grey,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                   const SizedBox(height: 32),
 

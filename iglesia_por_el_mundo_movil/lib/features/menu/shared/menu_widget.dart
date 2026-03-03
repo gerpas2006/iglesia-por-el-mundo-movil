@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iglesia_por_el_mundo_movil/core/service/donaciones_service.dart';
+import 'package:iglesia_por_el_mundo_movil/features/donaciones/bloc/donaciones_bloc.dart';
+import 'package:iglesia_por_el_mundo_movil/features/donaciones/ui/formulario_donacion_page.dart';
 
 class MenuWidget extends StatelessWidget {
   final int currentIndex;
@@ -73,7 +77,16 @@ class MenuWidget extends StatelessWidget {
         Positioned(
           top: -20,
           child: GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider(
+                    create: (context) => DonacionesBloc(DonacionesService()),
+                    child: const FormularioDonacionPage(),
+                  ),
+                ),
+              );
+            },
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [

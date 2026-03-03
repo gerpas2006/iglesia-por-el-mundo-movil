@@ -14,7 +14,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         var response = await loginService.login(event.email, event.password);
         
         // Verificar el rol del usuario
-        if (response.user.role == 'user' || response.user.role == 'admin') {
+        if (response.user.role == 'user') {
           emit(LoginSucces("Bienvenido ${response.user.name}"));
         } else {
           emit(LoginError("No tienes permisos para acceder a esta aplicación"));

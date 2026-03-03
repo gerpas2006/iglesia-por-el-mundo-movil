@@ -68,29 +68,33 @@ class DonacionResponse {
   });
 
   factory DonacionResponse.fromJson(Map<String, dynamic> json) {
-    return DonacionResponse(
-      id: json['id'],
-      nombreDonante: json['nombre_donante'],
-      apellidoDonante: json['apellido_donante'],
-      // Importante: usar 'num' y luego toDouble() maneja tanto int (50) como double (75.5)
-      donacion: (json['donacion'] as num?)?.toDouble(),
-      mensaje: json['mensaje'],
-      fechaDonacion: json['fecha_donacion'] != null 
-          ? DateTime.tryParse(json['fecha_donacion']) 
-          : null,
-      metodo: json['metodo'],
-      userId: json['user_id'],
-      tipoDonacionId: json['tipo_donacion_id'],
-      createdAt: json['created_at'] != null 
-          ? DateTime.tryParse(json['created_at']) 
-          : null,
-      updatedAt: json['updated_at'] != null 
-          ? DateTime.tryParse(json['updated_at']) 
-          : null,
-      tipoDonacion: json['tipo_donacion'] != null
-          ? TipoDonacion.fromJson(json['tipo_donacion'])
-          : null,
-    );
+    try {
+      return DonacionResponse(
+        id: json['id'] as int?,
+        nombreDonante: json['nombre_donante'] as String?,
+        apellidoDonante: json['apellido_donante'] as String?,
+        // Importante: usar 'num' y luego toDouble() maneja tanto int (50) como double (75.5)
+        donacion: (json['donacion'] as num?)?.toDouble(),
+        mensaje: json['mensaje'] as String?,
+        fechaDonacion: json['fecha_donacion'] != null 
+            ? DateTime.tryParse(json['fecha_donacion'].toString()) 
+            : null,
+        metodo: json['metodo'] as String?,
+        userId: json['user_id'] as int?,
+        tipoDonacionId: json['tipo_donacion_id'] as int?,
+        createdAt: json['created_at'] != null 
+            ? DateTime.tryParse(json['created_at'].toString()) 
+            : null,
+        updatedAt: json['updated_at'] != null 
+            ? DateTime.tryParse(json['updated_at'].toString()) 
+            : null,
+        tipoDonacion: json['tipo_donacion'] != null
+            ? TipoDonacion.fromJson(json['tipo_donacion'] as Map<String, dynamic>)
+            : null,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {

@@ -9,8 +9,15 @@ final class DonacionesLoading extends DonacionesState {}
 
 final class DonacionesSuccess extends DonacionesState {
   final List<DonacionResponse> listaDonaciones;
+  final List<TipoDonacionResponse>? tiposDonacion;
 
-  DonacionesSuccess(this.listaDonaciones);
+  DonacionesSuccess({required this.listaDonaciones,required this.tiposDonacion});
+}
+
+final class DonacionCreada extends DonacionesState {
+  final DonacionResponse donacion;
+
+  DonacionCreada(this.donacion);
 }
 
 final class DonacionesError extends DonacionesState {

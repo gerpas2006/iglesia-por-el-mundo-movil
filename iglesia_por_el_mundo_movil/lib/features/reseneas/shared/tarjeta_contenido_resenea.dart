@@ -5,6 +5,7 @@ class TarjetaContenidoResenea extends StatelessWidget {
   final String description;
   final double rating;
   final DateTime date;
+  final String userName;
 
   const TarjetaContenidoResenea({
     super.key,
@@ -12,6 +13,7 @@ class TarjetaContenidoResenea extends StatelessWidget {
     required this.description,
     required this.rating,
     required this.date,
+    required this.userName,
   });
 
   @override
@@ -33,20 +35,34 @@ class TarjetaContenidoResenea extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Encabezado: título + estado
+          // Encabezado: usuario + título
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userName,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF5C6BC0),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      title,
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           // Estrellas
           Row(
             children: List.generate(5, (index) {
@@ -57,9 +73,12 @@ class TarjetaContenidoResenea extends StatelessWidget {
               );
             }),
           ),
-          const SizedBox(height: 8),
-          Text(description),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
+          Text(
+            description,
+            style: const TextStyle(color: Colors.black87, height: 1.5),
+          ),
+          const SizedBox(height: 12),
           Text(
             "${date.day} de ${_getMonthName(date.month)} de ${date.year}",
             style: const TextStyle(color: Colors.grey, fontSize: 12),

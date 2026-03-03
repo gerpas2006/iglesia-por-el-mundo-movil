@@ -146,7 +146,9 @@ class ReseneasListPage extends StatelessWidget {
                       title: resenea.tituloReseneas,
                       description: resenea.comentarioResenea,
                       rating: resenea.calificacionResenea.toDouble(),
-                      date: DateTime.parse(resenea.fechaResenea),
+                      date: DateTime.parse(resenea.fechaResenea)
+                          .toLocal(), // Convertir a hora local si es necesario
+                      userName: resenea.user?.name ?? 'Anónimo',
                     );
                   },
                 ),
