@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iglesia_por_el_mundo_movil/core/models/citas.dart';
+import 'package:iglesia_por_el_mundo_movil/core/service/citas_service.dart';
+import 'package:iglesia_por_el_mundo_movil/features/citas/bloc/citas_bloc.dart';
+import 'package:iglesia_por_el_mundo_movil/features/citas/ui/formulario_editar_cita_page.dart';
 
 class SolicitudCitaCard extends StatelessWidget {
   final String nombreCita;
@@ -219,6 +223,49 @@ class SolicitudCitaCard extends StatelessWidget {
                 _fila('Contacto', cita.contacto!, Icons.phone_outlined),
               if (cita.mensaje != null && cita.mensaje!.isNotEmpty)
                 _fila('Mensaje', cita.mensaje!, Icons.message_outlined),
+              
+              const SizedBox(height: 24),
+              
+              // Botones de Cerrar y Editar
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close),
+                      label: const Text('Cerrar'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF5C6BC0),
+                        side: const BorderSide(color: Color(0xFF5C6BC0)),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider(
+                              create: (context) => CitasBloc(CitasService()),
+                              child: FormularioEditarCitaPage(cita: cita),
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.edit),
+                      label: const Text('Editar'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF5C6BC0),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

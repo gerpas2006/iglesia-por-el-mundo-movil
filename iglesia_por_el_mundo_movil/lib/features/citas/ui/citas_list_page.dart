@@ -4,6 +4,7 @@ import 'package:iglesia_por_el_mundo_movil/core/service/citas_service.dart';
 import 'package:iglesia_por_el_mundo_movil/features/citas/bloc/citas_bloc.dart';
 import 'package:iglesia_por_el_mundo_movil/features/citas/shared/resumen_cita_widget.dart';
 import 'package:iglesia_por_el_mundo_movil/features/citas/shared/solicitud_cita_card.dart';
+import 'package:iglesia_por_el_mundo_movil/features/citas/ui/formulario_cita_page.dart';
 
 class MisCitasScreen extends StatelessWidget {
   final void Function(int)? onNavigate;
@@ -105,7 +106,14 @@ class _CitasView extends StatelessWidget {
                             width: double.infinity,
                             child: ElevatedButton.icon(
                               onPressed: () {
-                                // TODO: Navegar a formulario de nueva cita
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => BlocProvider(
+                                      create: (context) => CitasBloc(CitasService()),
+                                      child: const FormularioCitaPage(),
+                                    ),
+                                  ),
+                                );
                               },
                               icon: const Icon(Icons.add, size: 20),
                               label: const Text(

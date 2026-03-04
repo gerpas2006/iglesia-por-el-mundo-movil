@@ -7,4 +7,5 @@ abstract class DonacionesInterface {
   Future<DonacionResponse> crearDonacion(DonacionesDto donacion);
   Future<List<TipoDonacionResponse>> listarTipoDonacion();
 
+
 }
