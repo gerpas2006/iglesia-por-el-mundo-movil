@@ -25,15 +25,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _widgetOptions = <Widget>[
-    const HomeContent(),
-    const MisDonacionesScreen(),
-    const MisCitasScreen(),
-    const OracionesListPage(),
-    const ReseneasListPage(),
-    const EventosScreen(),
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -45,6 +36,15 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _selectedIndex = widget.initialIndex;
   }
+
+  List<Widget> get _widgetOptions => <Widget>[
+    HomeContent(onNavigate: _onItemTapped),
+    const MisDonacionesScreen(),
+    const MisCitasScreen(),
+    const OracionesListPage(),
+    const ReseneasListPage(),
+    const EventosScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,9 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class HomeContent extends StatelessWidget {
-  const HomeContent({super.key});
+  final Function(int)? onNavigate;
+  
+  const HomeContent({super.key, this.onNavigate});
 
   @override
   Widget build(BuildContext context) {
@@ -136,14 +138,20 @@ class HomeContent extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
-                            final homeState = context.findAncestorStateOfType<_HomeScreenState>();
-                            if (homeState != null) {
-                              homeState._onItemTapped(5);
+                            // Usar el callback si está disponible
+                            if (onNavigate != null) {
+                              onNavigate!(1); // Índice 1 para EventosScreen en MenuPage
                             } else {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const HomeScreen(initialIndex: 5)),
-                              );
+                              // Fallback para HomeScreen
+                              final homeState = context.findAncestorStateOfType<_HomeScreenState>();
+                              if (homeState != null) {
+                                homeState._onItemTapped(5); // Índice 5 para EventosScreen en HomeScreen
+                              } else {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const HomeScreen(initialIndex: 5)),
+                                );
+                              }
                             }
                           },
                           child: const Text("Ver todos"),

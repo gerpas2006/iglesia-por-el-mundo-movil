@@ -70,7 +70,7 @@ class _MenuPageState extends State<MenuPage> {
             child: IndexedStack(
               index: _currentIndex,
               children: [
-          const HomeContent(),
+          HomeContent(onNavigate: _onItemTapped),
           const EventosScreen(),
           const OracionesListPage(),
           PerfilPage(onNavigate: _onItemTapped),
