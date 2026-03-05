@@ -44,7 +44,7 @@ class EventoResponse {
   final DateTime? fechaEvento;
   final String? ubicacion;
   final String? descripcionEvento;
-  final int? estado; // Nota: En este JSON el estado es un número (1, 2)
+  final bool? estado;
   final int? userId;
   final int? tipoEventoId;
   final DateTime? createdAt;
@@ -74,7 +74,7 @@ class EventoResponse {
           : null,
       ubicacion: json['ubicacion'],
       descripcionEvento: json['descripcion_evento'],
-      estado: json['estado'],
+      estado: json['estado'] == 1 ? true : json['estado'] == 2 ? false : null,
       userId: json['user_id'],
       tipoEventoId: json['tipo_evento_id'],
       createdAt: json['created_at'] != null 
@@ -96,7 +96,7 @@ class EventoResponse {
       'fecha_evento': fechaEvento?.toString(), // Guarda formato "2025-12-20 00:00:00"
       'ubicacion': ubicacion,
       'descripcion_evento': descripcionEvento,
-      'estado': estado,
+      'estado': estado == true ? 1 : estado == false ? 2 : null,
       'user_id': userId,
       'tipo_evento_id': tipoEventoId,
       'created_at': createdAt?.toIso8601String(),

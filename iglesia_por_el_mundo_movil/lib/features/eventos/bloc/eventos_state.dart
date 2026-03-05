@@ -8,7 +8,7 @@ final class EventosInitial extends EventosState {}
 final class EventosLoading extends EventosState {}
 
 final class EventosSucces extends EventosState {
-  Future<List<EventoResponse>> listaEventos;
+  final List<EventoResponse> listaEventos;
   EventosSucces(this.listaEventos);
 }
 

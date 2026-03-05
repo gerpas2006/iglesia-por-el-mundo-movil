@@ -5,6 +5,7 @@ import 'package:iglesia_por_el_mundo_movil/core/service/oraciones_service.dart';
 import 'package:iglesia_por_el_mundo_movil/features/inicio/bloc/inicio_bloc.dart';
 import 'package:iglesia_por_el_mundo_movil/features/inicio/shared/oracion_widget.dart';
 import 'package:iglesia_por_el_mundo_movil/features/inicio/shared/proximos_eventos.dart';
+import 'package:iglesia_por_el_mundo_movil/features/inicio/shared/evento_detail_modal.dart';
 import 'package:iglesia_por_el_mundo_movil/features/menu/shared/menu_widget.dart';
 import 'package:iglesia_por_el_mundo_movil/features/donaciones/ui/donaciones_list_page.dart';
 import 'package:iglesia_por_el_mundo_movil/features/citas/ui/citas_list_page.dart';
@@ -105,8 +106,7 @@ class HomeContent extends StatelessWidget {
             final oracion = state.getRandomOracion;
             final eventos = state.listaEventos;
             
-            // Filtrar solo eventos disponibles (estado == 1)
-            final eventosDisponibles = eventos.where((e) => e.estado == 1).toList();
+            // Los eventos ya están filtrados en el bloc (solo con estado == true)
             
             return SafeArea(
               child: SingleChildScrollView(
@@ -158,10 +158,11 @@ class HomeContent extends StatelessWidget {
                         )
                       ],
                     ),
+                    // Los eventos ya están filtrados en el bloc (solo con estado == true)
                     const SizedBox(height: 10),
                     
                     // Lista de eventos disponibles
-                    if (eventosDisponibles.isEmpty)
+                    if (eventos.isEmpty)
                       const Center(
                         child: Padding(
                           padding: EdgeInsets.all(20.0),
@@ -172,7 +173,7 @@ class HomeContent extends StatelessWidget {
                         ),
                       )
                     else
-                      ...eventosDisponibles.take(3).map((evento) {
+                      ...eventos.take(3).map((evento) {
                         // Formatear fecha
                         String mes = "---";
                         String dia = "--";
@@ -192,6 +193,7 @@ class HomeContent extends StatelessWidget {
                             etiqueta: evento.tipoEvento?.nombreEvento ?? "Evento",
                             titulo: evento.nombreEvento ?? "Sin título",
                             hora: evento.ubicacion ?? "Ubicación no disponible",
+                            onTap: () => showEventoDetailModal(context, evento),
                           ),
                         );
                       }).toList(),

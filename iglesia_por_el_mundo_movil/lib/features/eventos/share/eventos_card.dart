@@ -7,6 +7,7 @@ class EventoCard extends StatelessWidget {
   final String fecha;         // Ej: "domingo, 12 de octubre..."         // Ej: "10:00 hrs"
   final String ubicacion;     // Ej: "Templo Principal"
   final String estado;        // Ej: "Disponible", "Terminada"
+  final VoidCallback? onTap;
 
   const EventoCard({
     super.key,
@@ -16,6 +17,7 @@ class EventoCard extends StatelessWidget {
     required this.fecha,
     required this.ubicacion,
     required this.estado,
+    this.onTap,
   });
 
   @override
@@ -24,7 +26,9 @@ class EventoCard extends StatelessWidget {
     final bool esDisponible = estado.toLowerCase() == 'disponible';
     final Color colorEstado = esDisponible ? const Color(0xFF00C853) : const Color(0xFFFF0000); // Verde o Rojo
     
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -110,6 +114,7 @@ class EventoCard extends StatelessWidget {
           _buildDetailRow(Icons.location_on_outlined, ubicacion),
         ],
       ),
+      ),
     );
   }
 
@@ -130,4 +135,4 @@ class EventoCard extends StatelessWidget {
       ],
     );
   }
-}
+} 

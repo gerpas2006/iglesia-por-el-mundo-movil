@@ -6,6 +6,7 @@ class NextEventCard extends StatelessWidget {
   final String etiqueta; // Ej: "Servicio"
   final String titulo;
   final String hora;
+  final VoidCallback? onTap;
 
   const NextEventCard({
     super.key,
@@ -14,11 +15,14 @@ class NextEventCard extends StatelessWidget {
     required this.etiqueta,
     required this.titulo,
     required this.hora,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -99,6 +103,7 @@ class NextEventCard extends StatelessWidget {
           ),
           const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
         ],
+      ),
       ),
     );
   }

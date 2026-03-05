@@ -11,7 +11,7 @@ class EventosBloc extends Bloc<EventosEvent, EventosState> {
     on<EventosEvent>((event, emit) async{
       emit(EventosLoading());
       try{
-        var response = eventos_service.getAllEventos();
+        var response = await eventos_service.getAllEventos();
         emit(EventosSucces(response));
       }catch (e){
         emit(EventosError(e.toString()));

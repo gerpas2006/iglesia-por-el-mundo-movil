@@ -19,10 +19,12 @@ class InicioBloc extends Bloc<InicioEvent, InicioState> {
       emit(InicioLoading());
       try {
         var listaEventos = await _eventosService.getAllEventos();
+        // Filtrar solo eventos con estado = true
+        var eventosFiltrados = listaEventos.where((evento) => evento.estado == true).toList();
         var oracionRandom = await _oracionesService.getRandomOracion();
         emit(InicioSucces(
           getRandomOracion: oracionRandom,
-          listaEventos: listaEventos,
+          listaEventos: eventosFiltrados,
         ));
       } catch (e) {
         emit(InicioError(e.toString()));
