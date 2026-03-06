@@ -25,6 +25,11 @@ class _FormularioEditarCitaPageState extends State<FormularioEditarCitaPage> {
   TipoCitaResponse? _tipoCitaSeleccionada;
   List<TipoCitaResponse> _listaTipoCitas = [];
 
+  bool get _isCitaNoEditable {
+    final estado = (widget.cita.estado ?? '').toLowerCase().trim();
+    return estado == 'aprobada' || estado == 'aceptada' || estado == 'rechazada';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -83,6 +88,11 @@ class _FormularioEditarCitaPageState extends State<FormularioEditarCitaPage> {
   }
 
   void _submit() {
+    if (_isCitaNoEditable) {
+      _showError('Las citas aprobadas o rechazadas no se pueden editar');
+      return;
+    }
+
     if (_formKey.currentState!.validate()) {
       if (_tipoCitaSeleccionada == null) {
         _showError('Por favor selecciona un tipo de cita');
@@ -187,6 +197,34 @@ class _FormularioEditarCitaPageState extends State<FormularioEditarCitaPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (_isCitaNoEditable) ...[
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF3E0),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFFFCC80)),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.lock_outline, color: Color(0xFFEF6C00), size: 18),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Esta cita ya fue aprobada o rechazada y no puede editarse.',
+                              style: TextStyle(
+                                color: Color(0xFFBF360C),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
                   // Nombre
                   const Text(
                     'Nombre',
@@ -386,7 +424,7 @@ class _FormularioEditarCitaPageState extends State<FormularioEditarCitaPage> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: isLoading ? null : _submit,
+                      onPressed: (isLoading || _isCitaNoEditable) ? null : _submit,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF5C6BC0),
                         foregroundColor: Colors.white,

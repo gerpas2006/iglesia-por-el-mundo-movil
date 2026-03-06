@@ -26,8 +26,11 @@ class SolicitudCitaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Definimos colores según el estado
-    final isAprobada = estado.toLowerCase() == 'aprobada' || estado.toLowerCase() == 'aceptada';
-    final colorEstado = isAprobada ? const Color(0xFF00C853) : const Color(0xFFFF9800); // Verde o Naranja
+    final isAprobada = _isCitaAprobada(estado);
+    final isRechazada = _isCitaRechazada(estado);
+    final colorEstado = isRechazada
+        ? const Color(0xFFE53935)
+        : (isAprobada ? const Color(0xFF00C853) : const Color(0xFFFF9800));
     final colorBorde = const Color(0xFFAB47BC); // Morado claro (Purple 400)
 
     return Container(
@@ -154,8 +157,12 @@ class SolicitudCitaCard extends StatelessWidget {
   TextStyle _valueStyle() => const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF37474F));
 
   void _mostrarDetalles(BuildContext context) {
-    final isAprobada = estado.toLowerCase() == 'aprobada' || estado.toLowerCase() == 'aceptada';
-    final colorEstado = isAprobada ? const Color(0xFF00C853) : const Color(0xFFFF9800);
+    final isAprobada = _isCitaAprobada(estado);
+    final isRechazada = _isCitaRechazada(estado);
+    final isNoEditable = isAprobada || isRechazada;
+    final colorEstado = isRechazada
+      ? const Color(0xFFE53935)
+      : (isAprobada ? const Color(0xFF00C853) : const Color(0xFFFF9800));
 
     showModalBottomSheet(
       context: context,
@@ -244,19 +251,21 @@ class SolicitudCitaCard extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider(
-                              create: (context) => CitasBloc(CitasService()),
-                              child: FormularioEditarCitaPage(cita: cita),
-                            ),
-                          ),
-                        );
-                      },
+                        onPressed: isNoEditable
+                          ? null
+                          : () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider(
+                                    create: (context) => CitasBloc(CitasService()),
+                                    child: FormularioEditarCitaPage(cita: cita),
+                                  ),
+                                ),
+                              );
+                            },
                       icon: const Icon(Icons.edit),
-                      label: const Text('Editar'),
+                      label: Text(isNoEditable ? 'No editable' : 'Editar'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF5C6BC0),
                         foregroundColor: Colors.white,
@@ -266,11 +275,34 @@ class SolicitudCitaCard extends StatelessWidget {
                   ),
                 ],
               ),
+              if (isNoEditable) ...[
+                const SizedBox(height: 10),
+                Text(
+                  isRechazada
+                      ? 'Las citas rechazadas no se pueden editar.'
+                      : 'Las citas aprobadas no se pueden editar.',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
       ),
     );
+  }
+
+  bool _isCitaAprobada(String estado) {
+    final estadoNormalizado = estado.toLowerCase().trim();
+    return estadoNormalizado == 'aprobada' || estadoNormalizado == 'aceptada';
+  }
+
+  bool _isCitaRechazada(String estado) {
+    final estadoNormalizado = estado.toLowerCase().trim();
+    return estadoNormalizado == 'rechazada';
   }
 
   Widget _fila(String label, String value, IconData icon, {Color? valueColor}) {

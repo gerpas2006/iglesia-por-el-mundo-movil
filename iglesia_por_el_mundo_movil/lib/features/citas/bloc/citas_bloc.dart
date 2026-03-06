@@ -56,6 +56,14 @@ class CitasBloc extends Bloc<CitasEvent, CitasState> {
 
   Future<void> _onEditarCita(
       CitasEditarCita event, Emitter<CitasState> emit) async {
+    final estadoActual = event.cita.estado.toLowerCase().trim();
+    if (estadoActual == 'aprobada' ||
+        estadoActual == 'aceptada' ||
+        estadoActual == 'rechazada') {
+      emit(CitasError('Las citas aprobadas o rechazadas no se pueden editar'));
+      return;
+    }
+
     emit(CitasLoading());
     try {
       var response = await _citasService.editarCita(event.cita);
