@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:iglesia_por_el_mundo_movil/core/config/app_config.dart';
+import 'package:iglesia_por_el_mundo_movil/core/exceptions/app_exceptions.dart';
 import 'package:iglesia_por_el_mundo_movil/core/interface/oraciones_interface.dart';
 import 'package:iglesia_por_el_mundo_movil/core/models/oracione.dart';
+import 'package:iglesia_por_el_mundo_movil/core/service/error_handler.dart';
 import 'package:iglesia_por_el_mundo_movil/core/service/token_service.dart';
 
 class OracionesService implements OracionesInterface {
@@ -13,12 +15,10 @@ class OracionesService implements OracionesInterface {
 
   @override
   Future<List<OracionResponse>> getAllOraciones() async {
-    // Obtener el token del usuario autenticado
-    final token = await _tokenService.getToken();
-
-    var url = Uri.parse('$_baseUrl/oraciones');
-
     try {
+      final token = await _tokenService.getToken();
+      var url = Uri.parse('$_baseUrl/oraciones');
+
       var response = await http.get(
         url,
         headers: {
@@ -26,12 +26,14 @@ class OracionesService implements OracionesInterface {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeoutException(),
       );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         var jsonData = json.decode(response.body);
         
-        // Parsear el array de oraciones
         List<OracionResponse> listaOraciones = [];
         if (jsonData is List) {
           listaOraciones = jsonData
@@ -41,32 +43,54 @@ class OracionesService implements OracionesInterface {
         
         return listaOraciones;
       } else {
-        throw Exception(
-            'Error al obtener oraciones.');
+        // Manejo de errores basado en statusCode
+        if (response.statusCode == 401) {
+          throw AuthenticationException(
+            message: 'No autenticado. Debes iniciar sesión para ver las oraciones',
+          );
+        } else if (response.statusCode == 403) {
+          throw AuthorizationException(
+            message: 'No tienes permisos para ver las oraciones',
+          );
+        } else if (response.statusCode == 404) {
+          throw NotFoundException(
+            message: 'No se encontraron oraciones',
+          );
+        } else if (response.statusCode >= 500) {
+          throw ServerException(
+            message: 'Error en el servidor al obtener oraciones',
+          );
+        } else {
+          throw ErrorHandler.handleHttpException(
+            response,
+            statusCode: response.statusCode,
+          );
+        }
       }
+    } on AppException {
+      rethrow;
     } catch (e) {
-      throw Exception('Error al obtener oraciones: $e');
+      throw ErrorHandler.handleHttpException(e);
     }
   }
 
   @override
   Future<OracionResponse?> getRandomOracion() async {
     try {
-      // Obtener todas las oraciones
       final todasLasOraciones = await getAllOraciones();
       
-      // Si no hay oraciones, retornar null
       if (todasLasOraciones.isEmpty) {
         return null;
       }
       
-      // Seleccionar una oración aleatoria
       final random = Random();
       final indiceAleatorio = random.nextInt(todasLasOraciones.length);
       
       return todasLasOraciones[indiceAleatorio];
+    } on AppException {
+      rethrow;
     } catch (e) {
-      throw Exception('Error al obtener oración aleatoria: $e');
+      throw ErrorHandler.handleHttpException(e);
     }
   }
 }
